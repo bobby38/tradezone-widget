@@ -564,13 +564,8 @@
         this.messageInput.addEventListener('input', () => {
           this.autoResizeTextarea();
         });
-      }
 
-      playVideo() {
-        this.video.muted = false; // Unmute the video
-        this.video.play();
-        this.playButton.style.display = 'none';
-        
+        // Moved video event listeners here to be attached only once
         this.video.addEventListener('pause', () => {
           this.playButton.style.display = 'flex';
         });
@@ -578,6 +573,18 @@
         this.video.addEventListener('ended', () => {
           this.playButton.style.display = 'flex';
         });
+      }
+
+      async playVideo() {
+        try {
+          this.video.muted = false;
+          await this.video.play();
+          this.playButton.style.display = 'none';
+        } catch (err) {
+          console.error("Error playing video:", err);
+          // If play fails, show the button again so the user can retry
+          this.playButton.style.display = 'flex';
+        }
       }
 
       activateVoiceChat() {
