@@ -50,15 +50,15 @@
     }
 
     .welcome-view {
-      /* Initially hidden */
-      display: none; 
+      /* Initially visible */
+      display: flex; 
       padding: 32px 24px 24px;
       text-align: center;
     }
 
     .chat-view {
-      /* Initially visible */
-      display: flex; 
+      /* Initially hidden */
+      display: none; 
       padding: 0 24px 24px;
     }
 
@@ -546,6 +546,7 @@
         });
 
         this.talkButton.addEventListener('click', () => {
+          this.showChatArea(); // Switch to the chat view
           this.activateVoiceChat();
         });
 
@@ -566,6 +567,7 @@
       }
 
       playVideo() {
+        this.video.muted = false; // Unmute the video
         this.video.play();
         this.playButton.style.display = 'none';
         
