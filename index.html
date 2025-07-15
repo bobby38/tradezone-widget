@@ -54,8 +54,140 @@
       display: flex; 
       padding: 32px 24px 24px;
       text-align: center;
+      overflow: hidden; /* Prevent overflow issues */
     }
-
+    
+    /* Custom ElevenLabs Widget Styling */
+    .elevenlabs-container {
+      margin-top: 20px;
+      width: 100%;
+    }
+    
+    /* Custom ElevenLabs Widget */
+    .custom-voice-widget {
+      background-color: white;
+      border-radius: 16px;
+      padding: 15px;
+      text-align: left;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .widget-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .widget-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #7c3aed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .widget-avatar img {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .widget-title {
+      color: #7c3aed;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    
+    .talk-button, .call-button {
+      background-color: #7c3aed;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      margin-top: 20px;
+      width: 100%;
+      max-width: none;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .classic-call-container {
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      margin-top: 20px;
+      width: 80%;
+      max-width: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .talk-button:hover, .call-button:hover {
+      background-color: #6d28d9;
+    }
+    
+    .call-icon {
+      width: 18px;
+      height: 18px;
+    }
+    
+    /* Initially hide the ElevenLabs widget until activated */
+    elevenlabs-convai {
+      display: none;
+      transition: all 0.3s ease;
+    }
+    
+    /* ElevenLabs widget floating styling */
+    elevenlabs-convai {
+      transition: all 0.3s ease;
+    }
+    
+    /* Hide ElevenLabs widget in chat view */
+    .chat-view elevenlabs-convai,
+    .chat-view ~ elevenlabs-convai {
+      display: none !important;
+    }
+    
+    /* Back Button Styling */
+    .back-button {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      background: rgba(50, 50, 50, 0.7);
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+    
+    .back-button:hover {
+      background: rgba(70, 70, 70, 0.8);
+    }
+    
+    .back-button svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
+    }
+    
     .chat-view {
       /* Initially hidden */
       display: none; 
@@ -405,6 +537,8 @@
   </style>
 </head>
 <body>
+  <!-- Hidden ElevenLabs Widget that will float on top -->
+  <elevenlabs-convai agent-id="agent_01jzzev7k9e6d9dqsj507s9yz2" button-text="Start a call" header-text="Need help?" style="display: none; position: fixed; z-index: 10000;"></elevenlabs-convai>
   <div class="widget-container">
     <!-- Welcome View -->
     <div class="welcome-view" id="welcomeView">
@@ -424,12 +558,28 @@
         </div>
       </div>
       
-      <!-- Talk Button -->
-      <button class="talk-button" id="talkButton">Talk</button>
+      <!-- Chat Button -->
+      <button class="talk-button" id="talkButton">CHAT NOW</button>
+      
+      <!-- Call Button (similar to CHAT NOW) -->
+      <button class="call-button" id="startCallButton">
+        <svg class="call-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" style="margin-right: 8px;">
+          <path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.03-1.02.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.26.36-.65.25-1C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1zM19 12h2c0-4.97-4.03-9-9-9v2c3.87 0 7 3.13 7 7zm-4 0h2c0-2.76-2.24-5-5-5v2c1.66 0 3 1.34 3 3z"/>
+        </svg>
+        START A CALL
+      </button>
+      
+      <!-- No container needed here as we'll float the widget on top -->
     </div>
 
     <!-- Chat View -->
     <div class="chat-view" id="chatView">
+      <!-- Back Button -->
+      <button class="back-button" id="backButton">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+        </svg>
+      </button>
       <!-- Thinking Indicator -->
       <div class="thinking-indicator" id="thinkingIndicator">
         <span>AI is thinking</span>
@@ -460,9 +610,7 @@
     </div>
   </div>
 
-  <!-- ElevenLabs Voice Widget -->
-  <elevenlabs-convai agent-id="agent_01jzzev7k9e6d9dqsj507s9yz2"></elevenlabs-convai>
-  <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+  <!-- ElevenLabs widget is already included at the top of the body -->
 
   <!-- Markdown Parser Library -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -493,6 +641,7 @@
         this.thinkingIndicator = document.getElementById('thinkingIndicator');
         this.welcomeView = document.getElementById('welcomeView');
         this.chatView = document.getElementById('chatView');
+        this.startCallButton = document.getElementById('startCallButton');
       }
 
       setupUserId() {
@@ -549,6 +698,13 @@
           this.showChatArea(); // Switch to the chat view
           this.activateVoiceChat();
         });
+
+        const backButton = document.getElementById('backButton');
+        if (backButton) {
+          backButton.addEventListener('click', () => {
+            this.showWelcomeView();
+          });
+        }
 
         this.sendButton.addEventListener('click', () => {
           this.sendMessage();
@@ -726,7 +882,33 @@
           this.chatMessages.classList.add('active');
           console.log('Chat messages container activated.');
         }
+        
+        // Hide any active ElevenLabs widget and overlay when switching to chat mode
+        const elevenLabsWidget = document.querySelector('elevenlabs-convai');
+        const overlay = document.getElementById('elevenlabs-overlay');
+        
+        if (elevenLabsWidget) {
+          elevenLabsWidget.style.display = 'none';
+          console.log('ElevenLabs widget hidden in chat mode.');
+        }
+        
+        if (overlay) {
+          document.body.removeChild(overlay);
+          console.log('ElevenLabs overlay removed in chat mode.');
+        }
         this.scrollToBottom(); // Ensure scroll to bottom after showing
+      }
+      
+      showWelcomeView() {
+        // Hide chat view and show welcome view
+        if (this.chatView) {
+          this.chatView.style.display = 'none';
+          console.log('Chat view hidden.');
+        }
+        if (this.welcomeView) {
+          this.welcomeView.style.display = 'flex';
+          console.log('Welcome view made visible.');
+        }
       }
 
       showThinking() {
@@ -755,5 +937,225 @@
 
   <!-- Hidden container for n8n chat (required but not visible) -->
   <div id="hidden-chat-container" style="display: none;"></div>
+  <!-- ElevenLabs Widget Embed Script is already loaded above -->
+  
+  <!-- Custom ElevenLabs Widget Integration -->
+  <script>
+    // Global flag to prevent multiple clicks
+    let widgetActivationInProgress = false;
+    
+    // Function to load the ElevenLabs widget directly
+    function loadElevenLabsWidget() {
+      return new Promise((resolve, reject) => {
+        // Check if script already exists
+        if (document.querySelector('script[src*="convai-widget-embed"]')) {
+          console.log('ElevenLabs script already exists');
+          resolve();
+          return;
+        }
+        
+        // Create and load the script
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+        script.async = true;
+        script.type = 'text/javascript';
+        
+        script.onload = () => {
+          console.log('ElevenLabs script loaded successfully');
+          resolve();
+        };
+        
+        script.onerror = (error) => {
+          console.error('Error loading ElevenLabs script:', error);
+          reject(error);
+        };
+        
+        document.body.appendChild(script);
+      });
+    }
+    
+    // Function to show the ElevenLabs widget floating on top and trigger the call
+    function activateWidget() {
+      if (widgetActivationInProgress) {
+        console.log('Widget activation already in progress, ignoring click');
+        return;
+      }
+      
+      widgetActivationInProgress = true;
+      console.log('Activating ElevenLabs widget');
+      
+      // Get the ElevenLabs widget
+      const elevenLabsWidget = document.querySelector('elevenlabs-convai');
+      
+      if (!elevenLabsWidget) {
+        console.error('ElevenLabs widget not found');
+        widgetActivationInProgress = false;
+        return;
+      }
+      
+      // Make the widget visible and float on top of the page
+      elevenLabsWidget.style.display = 'block';
+      elevenLabsWidget.style.position = 'fixed';
+      elevenLabsWidget.style.top = '50%';
+      elevenLabsWidget.style.left = '50%';
+      elevenLabsWidget.style.transform = 'translate(-50%, -50%)';
+      elevenLabsWidget.style.zIndex = '10000';
+      elevenLabsWidget.style.width = '400px';
+      elevenLabsWidget.style.height = '500px';
+      elevenLabsWidget.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.2)';
+      elevenLabsWidget.style.border = 'none';
+      elevenLabsWidget.style.borderRadius = '12px';
+      elevenLabsWidget.style.overflow = 'hidden';
+      
+      console.log('ElevenLabs widget made visible floating on top');
+      
+      // Create a close button that will appear on the widget
+      const closeButton = document.createElement('button');
+      closeButton.id = 'elevenlabs-close-button';
+      closeButton.innerHTML = 'Close &times;'; // × symbol with text
+      closeButton.style.position = 'absolute';
+      closeButton.style.top = '95px';
+      closeButton.style.right = '10px';
+      closeButton.style.zIndex = '20000'; // Higher than everything else
+      closeButton.style.backgroundColor = '#7c3aed';
+      closeButton.style.color = 'white';
+      closeButton.style.border = 'none';
+      closeButton.style.borderRadius = '50px';
+      closeButton.style.width = 'auto';
+      closeButton.style.height = '30px';
+      closeButton.style.fontSize = '14px';
+      closeButton.style.fontWeight = 'bold';
+      closeButton.style.padding = '0 15px';
+      closeButton.style.textAlign = 'center';
+      closeButton.style.cursor = 'pointer';
+      closeButton.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+      closeButton.style.display = 'none'; // Initially hidden
+      closeButton.style.alignItems = 'center';
+      closeButton.style.justifyContent = 'center';
+      
+      // Add click handler to close button
+      closeButton.addEventListener('click', closeWidget);
+      
+      // Show the close button after a delay to allow terms to be accepted
+      setTimeout(() => {
+        closeButton.style.display = 'flex';
+      }, 5000); // 5 second delay
+      
+      // Create a wrapper div to position the widget
+      const widgetWrapper = document.createElement('div');
+      widgetWrapper.id = 'elevenlabs-widget-wrapper';
+      widgetWrapper.style.position = 'fixed';
+      widgetWrapper.style.top = '50%';
+      widgetWrapper.style.left = '50%';
+      widgetWrapper.style.transform = 'translate(-50%, -50%)';
+      widgetWrapper.style.zIndex = '10000';
+      
+      // Move the widget to the wrapper and add the close button to the wrapper
+      document.body.appendChild(widgetWrapper);
+      widgetWrapper.appendChild(elevenLabsWidget);
+      widgetWrapper.appendChild(closeButton);
+      
+      // Create a semi-transparent overlay behind the widget
+      const overlay = document.createElement('div');
+      overlay.id = 'elevenlabs-overlay';
+      overlay.style.position = 'fixed';
+      overlay.style.top = '0';
+      overlay.style.left = '0';
+      overlay.style.width = '100%';
+      overlay.style.height = '100%';
+      overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+      overlay.style.zIndex = '9999';
+      overlay.style.display = 'block';
+      
+      // Add click handler to close widget when clicking outside
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+          closeWidget();
+        }
+      });
+      
+      document.body.appendChild(overlay);
+      
+      // Try to trigger the call using multiple methods
+      
+      // Method 1: Direct API call if available
+      if (window.ElevenLabsConvai && typeof window.ElevenLabsConvai.openWidget === 'function') {
+        console.log('Using global ElevenLabs API to open widget');
+        window.ElevenLabsConvai.openWidget();
+      }
+      
+      // Method 2: Try to access the shadow DOM and click the button
+      setTimeout(() => {
+        try {
+          const shadowRoot = elevenLabsWidget.shadowRoot;
+          if (shadowRoot) {
+            const actualButton = shadowRoot.querySelector('button');
+            if (actualButton) {
+              console.log('Found button in shadow DOM, clicking it');
+              actualButton.click();
+            } else {
+              console.log('Button not found in shadow DOM');
+            }
+          } else {
+            console.log('Shadow root not available');
+          }
+        } catch (e) {
+          console.log('Shadow DOM access failed:', e);
+        }
+        
+        // Reset the flag
+        widgetActivationInProgress = false;
+      }, 500);
+    }
+    
+    // Function to close the widget and overlay
+    function closeWidget() {
+      const elevenLabsWidget = document.querySelector('elevenlabs-convai');
+      const overlay = document.getElementById('elevenlabs-overlay');
+      const widgetWrapper = document.getElementById('elevenlabs-widget-wrapper');
+      const closeButton = document.getElementById('elevenlabs-close-button');
+      
+      // Move the widget back to the body and hide it
+      if (elevenLabsWidget && widgetWrapper) {
+        // Remove from wrapper and append back to body
+        widgetWrapper.removeChild(elevenLabsWidget);
+        document.body.appendChild(elevenLabsWidget);
+        elevenLabsWidget.style.display = 'none';
+      } else if (elevenLabsWidget) {
+        elevenLabsWidget.style.display = 'none';
+      }
+      
+      // Remove the wrapper if it exists
+      if (widgetWrapper) {
+        document.body.removeChild(widgetWrapper);
+      }
+      
+      // Remove the overlay if it exists
+      if (overlay) {
+        document.body.removeChild(overlay);
+      }
+      
+      console.log('ElevenLabs widget closed');
+    }
+    
+    // Initialize everything when the DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOM loaded, setting up ElevenLabs integration');
+      
+      // Load the ElevenLabs script
+      loadElevenLabsWidget().then(() => {
+        // Set up the button click handler
+        const startCallButton = document.getElementById('startCallButton');
+        if (startCallButton) {
+          console.log('Start call button found, adding click event');
+          startCallButton.addEventListener('click', activateWidget);
+        } else {
+          console.error('Start call button not found');
+        }
+      }).catch(error => {
+        console.error('Failed to initialize ElevenLabs widget:', error);
+      });
+    });
+  </script>
 </body>
 </html>
